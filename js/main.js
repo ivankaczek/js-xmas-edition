@@ -107,6 +107,21 @@ function validarNombre(nombre){
     return '';
 }
 
-// function validarCiudad
+function validarCiudad(ciudad){
+    if(ciudad.length === 0) {
+        return 'El campo ciudad no puede estar vacio';
+    }
+    if(ciudad.length >= 50) {
+        return 'El campo ciudad no puede contener mas de 50 caracteres';
+    }
+    return '';
+}
+
+function validarDescripcionRegalo(descripcionRegalo){
+    if(descripcionRegalo.length === 0) {
+        return 'La descripcion del regalo no puede estar vacia';
+    }
+    return '';
+}
 
 // fucntion validarDescripcionRegalo
