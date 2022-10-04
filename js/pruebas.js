@@ -6,7 +6,12 @@ function probarValidarNombre() {
           '111111111111111111111111111111111111111111111111111111111111111111111111111111111111111') ===
       'el nombre debe contener maximo 50 caracteres',
       'Validar nombre no validó que el nombre sea menor a 50 caracteres',
+   
   );
+    console.assert(validarNombre('123') === 'el campo nombre solo acepta letras','validarNombre no funciona cuando ingresan caracteres que no son letras');
+ // happypath o caso feliz
+    console.assert(validarNombre('Ivan') === '', 'validarNombre fallo con un nombre valido');
+
 }
 
 function probarValidarCiudad(){
@@ -15,15 +20,27 @@ function probarValidarCiudad(){
     console.assert(validarCiudad('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') 
      === 'El campo ciudad no puede contener mas de 50 caracteres',
      'Validar ciudad no valido que sea menor a 50 caracteres');
+    console.assert(validarCiudad('Mendoza') === "", 'validarCiudad fallo con un nombre de ciudad valido');
 }
 
 function probarValidarDescripcionRegalo(){
     console.assert(validarDescripcionRegalo('')=== 'La descripcion del regalo no puede estar vacia',
     'validarDescripcionRegalo no funciono con un string vacio');
+    console.assert(validarDescripcionRegalo("12345678901234567890aaa1234567890")==='La descripcion debe tener menos de 30 caracteres','validacionDescripcionRegalo fallo en controlar menos de 20 caracteres');
+    console.assert(validarDescripcionRegalo('Una bicicleta') === "" , 'validarDescripcionRegalo falla con un caso valido');
+    console.assert(validarDescripcionRegalo('ñ') === 'el campo descripcion solo puede contener numeros y letras y espacios', 'validar descripcion falla en chequear que solo tenga numeros, letras y espacios');
+   }
+
+function probarValidarComportamiento(){
+    console.assert(validarComportamiento("") === 'El campo comportamiento no puede estar vacio',
+    'validarComportamiento fallo en campo vacio');
+    console.assert(validarComportamiento('bueno') === "", 'fallaValidarComportamiento en el caso feliz');
 }
 
 probarValidarNombre();
 probarValidarCiudad();
+probarValidarDescripcionRegalo();
+probarValidarComportamiento();
 
  
 
