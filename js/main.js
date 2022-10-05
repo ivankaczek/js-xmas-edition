@@ -75,13 +75,13 @@ true
 // Estamos haciendo $form.esteName.value; 
 // vemos la importancia del atributo 'name', que nos permite traernos facilmente las cosas
 
+
+/*
 const $form = document.querySelector('#carta-a-santa');
 const nombre = $form.nombre.value;
 console.log(nombre);
-
 const ciudad = $form.ciudad.value;
 console.log(ciudad);
-
 const comportamiento = $form.comportamiento.value;
 
 // revisando el html vas a ver que 'maso' está seleccionado por default
@@ -92,6 +92,8 @@ console.log(comportamiento);
 
 const descripcionRegalo = $form['descripcion-regalo'].value;
 console.log(descripcionRegalo);
+*/
+
 
 //const nombre = document.querySelector('[name=nombre]').value;
 
@@ -142,10 +144,275 @@ function validarDescripcionRegalo(descripcionRegalo){
    
     return '';
 }
-
+/*
 console.log('sigue una regex');
 console.log(/abc/.test("abcde"));
 console.log(/abc/.test("abxcde"));
+*/
+
+
+/// VALIDAR FORMULARIO 
+//con $form.nameTanto llamamos al que tiene name=nameTanto
+//const comportamiento = $form.comportamiento.value;
+        // basicamente no hay que validar comportamiento porque en un radioButton siempre
+        // hay algo elegido
+        //const errorComportamiento = validarComportamiento(comportamiento);
+
+function validarFormulario(event){
+    const $form = document.querySelector('#carta-a-santa');
+    
+    const nombre = $form.nombre.value;
+    const ciudad = $form.ciudad.value;
+    const descripcionRegalo = $form['descripcion-regalo'].value;
+    
+    const errorNombre = validarNombre(nombre);
+    const errorCiudad = validarCiudad(ciudad);
+    const errorDescripcionRegalo = validarDescripcionRegalo(descripcionRegalo);
+    
+    const errores = {
+        nombre: errorNombre,
+        ciudad: errorCiudad,
+        descripcionRegalo: errorDescripcionRegalo
+    }
+
+    //console.log(errores);
+    //  si miras en la consola el console.log de arriba vas a ver que errores
+    // es un OBJETO que describe con strings los errores en el formulario
+
+    //manejarErrores([errorNombre,errorCiudad,errorDescripcionRegalo]);
+    // voy a cambiar el array anterior por el objeto Errores
+
+    manejarErrores(errores);
+
+
+    event.preventDefault();
+    
+}
+
+
+/*
+Funcion Manejar Errores
+-----------------------
+Estoy infiriendo que lo que hay en la primer posición es el error del nombre.
+Así como está codeado abajo es complicado porque sí o sí tengo que pasar los errores
+en un determinado orden, o sea la posición 0 es error del nombre, la 1 el comportamiento, etc...
+Lo malo es que TENGO QUE ASUMIR QUE ME VAN A PASAR LOS ERRORES EN ORDEN. La función se vuelve
+muy específica, porque ya no se trata de 'manejar errores' sino de 'manejar errores en este orden'
+Y acá viene el tema OBJETOS porque para resolver esto, nos proponen DEFINIR UN OBJETO que describa
+los errores de otra manera
+*/
+function manejarErrores(errores){
+
+    /*
+    si fuera un array lo definíamos como sigue
+    errorNombre = errores[0];
+    errorCiduad = errores[1];
+    errorDescripcionRegalo = errores[2];
+    pero ahora lo cambiamos por un objeto
+    */
+    errorNombre = errores.nombre;
+    errorCiudad = errores.ciudad;
+    errorDescripcionRegalo = errores.descripcionRegalo;
+
+    if(errorNombre) {
+            $form.nombre.className = "error";
+    } else {
+            $form.nombre.className = "";
+    }
+
+    if(errorCiudad) {
+        $form.ciudad.className = "error";
+    } else {
+        $form.ciudad.className = "";
+    }
+
+    if(errorDescripcionRegalo) {
+        $form['descipcion-regalo'].className = "error";
+    } else {
+        $form['descripcion-regalo'].className = "";
+    }
+}
+
+/*
+Cuál es la idea ahora? Cambiar la funcion manejar errores para que sea más mantenible
+El objetivo de la funcion manejar errores es que nosotros seamos libres de agregar 20
+campos más al formulario, y de eso sólo tengamos que especificar la validación y que a su vez
+la funcion manejarErrores sea capaz de tomar cualquier cantidad de errores, ir al formulario,
+y pintarlos de rojo si son incorrectos.
+
+Volvamos a la funcion validarFormulario y definamos a errores como un objeto
+
+*/
+
+const $form = document.querySelector('#carta-a-santa');
+$form.onsubmit = validarFormulario;
+
+/*
+Objetos en JavaScript
+---------------------
+
+{}  eso es un objeto vacío
+
+Veamos un objeto que describe una persona:
+
+{
+    nombre: 'Ivan',
+    apellido: 'Tkaczek'
+}
+
+Vemos que la sintaxis es atributo, dos puntos, valor, separado por comas.
+Nada más. A esto se le llama 'llave-valor' porque en este caso 'nombre' es la
+llave e 'Ivan' es el valor que tiene esa llave. En inglés, 'key'-'value'
+Tener en cuenta que cuando la llave tiene un guión hay que ponerla entre comillas
+dobles
+Sigue input-output en la consola
+
+
+{
+    nombre: 'Ivan',
+    apellido: 'Tkaczek',
+    "fecha-nacimiento" : '24-01-1985'
+}
+{nombre: 'Ivan', apellido: 'Tkaczek', fecha-nacimiento: '24-01-1985'}
+
+const persona = {
+    nombre: 'Ivan',
+    apellido: 'Tkaczek',
+    "fecha-nacimiento" : '24-01-1985'
+}
+
+persona
+{nombre: 'Ivan', apellido: 'Tkaczek', fecha-nacimiento: '24-01-1985'}
+
+Vemos que es muy sencillo crear un objeto en JS
+
+persona.nombre
+'Ivan'
+
+Como vemos puedo llamar un atributo con el punto, o bien pasandole un STRING
+con ese atributo, mejor llamado NOMBRE DE LA LLAVE
+ como si fuese la posicion de un array, entre corchetes. Ejemplo:
+
+persona['apellido']
+'Tkaczek'
+
+persona["fecha-nacimiento"]
+'24-01-1985'
+
+Entonces ahora se entiende que 'formulario' es un OBJETO, de name="formulario"
+y que a su vez tiene un atributo que a su vez también es un objeto, cuya 
+llave tiene un nombre, que aquí también se llama nombre. Entonces name="nombre"
+es la llave para el objeto, de tipo input que es el siguiente:
+<input type="text" name="nombre" id="nombre" value="Fabricio">
+
+Creo que ahora me queda más claro la diferencia entre el id y el name
+'name' es la llave del objeto, y el id es un identificador para buscarlo que no
+debería ser repetido.
+
+A los objetos fácilmente puede asignarsele nuevos atributos o propiedades. Ej:
+
+persona.profesion = 'programador'
+'programador'
+
+persona 
+{nombre: 'Ivan', apellido: 'Tkaczek', fecha-nacimiento: '24-01-1985', profesion: 'programador'}
+
+Puedo facilmente borrar una propiedad haciendo 
+
+delete persona.profesion
+true
+persona 
+{nombre: 'Ivan', apellido: 'Tkaczek', fecha-nacimiento: '24-01-1985'}
+
+Hasta ahora hemos puesto sólo strings, pero los objetos adentro pueden tener 
+cualquier cosa. 
+
+Vamos con algo más complejo: Definimos un objeto (JSON significa JavaScript Object Notation)
+
+const miObjeto = {
+p1: "hola",
+p2: function(){console.log("hola soy propiedad 2"); },
+p3: 123,
+p4: {
+    p5: "Hola propiedad 5"
+},
+p6: [{p7: "Hola propiedad 7"}]
+}
+undefined
+
+miObjeto.p1
+'hola'
+
+miObjeto.p2
+ƒ (){console.log("hola soy propiedad 2"); }
+
+miObjeto.p3
+123
+
+miObjeto.p4
+{p5: 'Hola propiedad 5'}
+
+miObjeto.p4.p5
+'Hola propiedad 5'
+
+miObjeto.p6
+[{…}]
+
+miObjeto.p6[0]
+{p7: 'Hola propiedad 7'}
+
+miObjeto.p6[0].p7
+'Hola propiedad 7'
+
+// como mi objeto.p2 es una funcion la puedo ejecutar con la sintaxis p2().
+// la consola dice undefined porque la funcion no devuelve nada. Hizo un return 'undefined'
+miObjeto.p2()
+VM898:3 hola soy propiedad 2
+undefined
+
+miObjeto
+{p1: 'hola', p3: 123, p4: {…}, p6: Array(1), p2: ƒ}
+
+
+
+
+
+
+
+
+*/
+
+
+
+// onsubmit es una propiedad del objeto form que ESPERA UNA FUNCION.
+// porque cuando hacemos submit se ejecuta $form.onsubmit(); o sea que eso es un placeholder para
+// la funcion validarFormulario, que a su vez crea un evento, que lo llevó a que hicieran
+// click en ese formulario. Con el event.preventDefault(); el formulario nunca se envia
+
+
+/*
+Tema de entrevista:
+
+Event Bubbling
+--------------
+Si miramos el index.html de este proyecto, el input con el nombre está adentro de un <p> que a su vez
+está adentro de un <form> que a su vez está adentro de un <section> que a su vez está dentro de un <body>
+que a su vez está dentro de un <html>. Entonces la idea del event bubbling es que cuando hacemos click en
+el input, estamos haciendo click en todas las ramas 'padre' de ese input. 
+
+Con el event.preventDefault() lo que hacemos es que al validar el formulario NO SIGA SUBIENDO ese evento,
+no se siga propagando el evento submit. 
+
+Cuando se hace click en el button, primero sucede eso y luego se va subiendo hasta avisarle al formulario
+'te hicieron click'. Por eso el preventDefault(); en el botón o bien el return false, hace que uno 'mate'
+el evento antes de que se envíe. Hacerlo en el formulario es lo mismo, porque hasta que no salga del formulario,
+entonces este formulario no se va a enviar. 
+
+
+
+*/
+
+
 
 /*
 regex

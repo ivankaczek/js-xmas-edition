@@ -40,7 +40,7 @@ function probarValidarComportamiento(){
 probarValidarNombre();
 probarValidarCiudad();
 probarValidarDescripcionRegalo();
-probarValidarComportamiento();
+//probarValidarComportamiento();
 
  
 
