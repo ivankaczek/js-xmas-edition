@@ -55,51 +55,38 @@ function validarFormulario(event){
     'descripcion-regalo': errorDescripcionRegalo
    }
 
-   manejarErrores(errores);
-   //console.log(errores);
+   const esExito = manejarErrores(errores) === 0;
+   //console.log(manejarErrores(errores));
+
+   if(esExito) {
+        document.querySelector('#exito').className = "";
+        document.formulario.className = "oculto";
+   }
 
     event.preventDefault();
 }
 
 function manejarErrores(errores){
     const keys = Object.keys(errores);
+    const $errores = document.querySelector('#errores');
+    let cantidadErrores = 0;
+
     keys.forEach(function(key){
         const error = errores[key];
 
         if(error){
+            cantidadErrores++;
             $form[key].className = "error";
+            const $error = document.createElement('li');
+            $error.innerText = error; 
+            $errores.appendChild($error);
         } else {
             $form[key].className = ""; 
         }
         // ojo que esto solo funciona si la llave tiene el mismo nombre que eel atributo name
     });
  
-    /*
-    errorNombre = errores.nombre;
-    errorCiudad = errores.ciudad;
-    errorDescripcionRegalo = errores.descripcionRegalo;
-
-    if(errorNombre) {
-        $form.nombre.className = "error";
-    } else {
-        $form.nombre.className = "";
-    }
-
-    if(errorCiudad) {
-        $form.ciudad.className = "error";
-    } else {
-        $form.ciudad.className = "";
-    }
-
-    if(errorDescripcionRegalo) {
-        $form['descripcion-regalo'].className = "error";
-    } else {
-        $form['descripcion-regalo'].className = "";
-    }
-*/
- 
-
-
+    return cantidadErrores;
 }
 
 /*
