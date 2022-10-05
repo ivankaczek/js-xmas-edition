@@ -214,6 +214,7 @@ function manejarErrores(errores){
     errorCiudad = errores.ciudad;
     errorDescripcionRegalo = errores.descripcionRegalo;
 
+    // acá lo que dice es "si el error tiene caracteres, cambia la clase a "error"
     if(errorNombre) {
             $form.nombre.className = "error";
     } else {
@@ -234,6 +235,22 @@ function manejarErrores(errores){
 }
 
 /*
+Fijate que en CSS estamos diciendo que cuando class = "error"
+entonces se activa un border de 2 px en rojo 
+
+
+.error {
+    border: 2px solid red;
+}
+
+Después lo que vamos a ver es que un objeto en realidad puede tener varias clases
+por eso después vamos a utilizar classList.add pero por ahora no.
+Cuando usamos className vamos a 'pisar' o sobreescribir todas las clases
+
+*/
+
+
+/*
 Cuál es la idea ahora? Cambiar la funcion manejar errores para que sea más mantenible
 El objetivo de la funcion manejar errores es que nosotros seamos libres de agregar 20
 campos más al formulario, y de eso sólo tengamos que especificar la validación y que a su vez
@@ -246,6 +263,13 @@ Volvamos a la funcion validarFormulario y definamos a errores como un objeto
 
 const $form = document.querySelector('#carta-a-santa');
 $form.onsubmit = validarFormulario;
+
+/* Justo aquí arriba hay una funcion de callback, porque nunca estamos ejecutando
+validarFormulario();
+
+Sino que es el navegador el que está haciendo la llamada a la funcion
+pasandosela como una propiedad del formulario
+*/
 
 /*
 Objetos en JavaScript
@@ -373,10 +397,27 @@ undefined
 miObjeto
 {p1: 'hola', p3: 123, p4: {…}, p6: Array(1), p2: ƒ}
 
+Una cosa interesante de los objetos es que hay una forma de agarrar solamente los key
+o solamente los values
 
+errores = {nombre : "error en nombre", ciudad: "error en ciudad"};
+{nombre: 'error en nombre', ciudad: 'error en ciudad'}
 
+Object.keys(errores)
+(2) ['nombre', 'ciudad']
 
+Object.values(errores)
+(2) ['error en nombre', 'error en ciudad']
 
+Fijate que nos devuelve un array o bien con las llaves, o bien con los valores
+
+Ejemplo de forEach en la consola
+
+[2,3,6].forEach(function(n){console.log(2*n*n+5*n-10);})
+La consola muestra:
+ 8
+ 23
+ 92
 
 
 
@@ -389,6 +430,26 @@ miObjeto
 // la funcion validarFormulario, que a su vez crea un evento, que lo llevó a que hicieran
 // click en ese formulario. Con el event.preventDefault(); el formulario nunca se envia
 
+
+/*
+Lo recalcamos de nuevo para fijarlo en la memoria:
+una formulario es un OBJETO
+El que escribió html y js definió que los objetos formularios tienen una PROPIEDAD que es 
+el ONSUBMIT
+y que esa propiedad está esperando el nombre de una función que vamos a codear nosotros.
+por eso acepta directamente el nombre de la funcion
+$form.onsubmit = validarFormulario;
+
+y por eso ni ponemos los paréntesis
+
+No solo hace un submit, sino que ademas genera un evento
+
+y se puede 'matar' el envento con 
+function validarFormulario(event) {
+    TODO
+    event.preventDefault();
+}
+*/
 
 /*
 Tema de entrevista:
@@ -487,3 +548,54 @@ lo anterior esta diciendo 'que contenga letras, espacio y letras
 
 */
 // fucntion validarDescripcionRegalo
+
+/*
+Cómo se utiliza el forEach
+
+hay una forma sencilla sin declarar una funcion callback
+
+numeros
+(4) [2, 5, 6, 7]
+numeros.forEach(element => console.log(ardilla(element)));
+VM2671:1 4
+VM2671:1 13
+VM2671:1 16
+VM2671:1 19
+undefined
+
+ahí no hay callback function, simplemente dijimos, 'para cada elemento hace esto'
+
+Otra manera de utilizarla es pasar una funcion como parametro
+
+const $inputs = document.querySelectorAll('input')
+undefined
+$inputs.forEach(function(input){
+    console.log(input);
+});
+
+lo de arriba se puede 'leer' así:
+
+"para cada elemento input del 'objeto' o array o nodeList llamado $input
+ejecuta una funcion que es console.log(input) "
+
+la consola devuelve:
+VM2941:2 <input type=​"text" name=​"nombre" id=​"nombre" value=​"Fabricio" class=​"error">​
+VM2941:2 <input type=​"radio" value=​"muy_bueno" name=​"comportamiento">​
+VM2941:2 <input type=​"radio" value=​"bueno" name=​"comportamiento">​
+VM2941:2 <input type=​"radio" value=​"maso" name=​"comportamiento" checked>​
+undefined
+
+Ahora hagamos lo mismo pero imprimamos el .value
+
+$inputs.forEach(function(input){
+    console.log(input.value);
+});
+VM3019:2 1111
+VM3019:2 muy_bueno
+VM3019:2 bueno
+VM3019:2 maso
+undefined
+
+
+
+*/

@@ -52,7 +52,7 @@ function validarFormulario(event){
    const errores = {
     nombre: errorNombre,
     ciudad: errorCiudad,
-    descripcionRegalo: errorDescripcionRegalo
+    'descripcion-regalo': errorDescripcionRegalo
    }
 
    manejarErrores(errores);
@@ -62,6 +62,19 @@ function validarFormulario(event){
 }
 
 function manejarErrores(errores){
+    const keys = Object.keys(errores);
+    keys.forEach(function(key){
+        const error = errores[key];
+
+        if(error){
+            $form[key].className = "error";
+        } else {
+            $form[key].className = ""; 
+        }
+        // ojo que esto solo funciona si la llave tiene el mismo nombre que eel atributo name
+    });
+ 
+    /*
     errorNombre = errores.nombre;
     errorCiudad = errores.ciudad;
     errorDescripcionRegalo = errores.descripcionRegalo;
@@ -83,6 +96,10 @@ function manejarErrores(errores){
     } else {
         $form['descripcion-regalo'].className = "";
     }
+*/
+ 
+
+
 }
 
 /*
